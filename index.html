@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canteen Order System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e9ecef;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 60%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+        h1 {
+            text-align: center;
+            color: #343a40;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #495057;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #495057;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+        .form-group button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        .form-group button:hover {
+            background-color: #0056b3;
+        }
+        .hidden {
+            display: none;
+        }
+        #main-menu button {
+            width: calc(50% - 10px);
+            margin: 5px;
+        }
+        #item-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        #item-buttons button {
+            width: 30%;
+            margin: 10px;
+            padding: 15px;
+            background-color: #17a2b8;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+        #item-buttons button:hover {
+            background-color: #138496;
+        }
+        #order-summary {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+        #order-summary p {
+            margin: 5px 0;
+            font-size: 1em;
+        }
+        #user-list p, #history-list p {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            margin: 5px 0;
+            font-size: 1em;
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .button-group button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            background-color: #28a745;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .button-group button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="main-menu" class="form-group">
+            <h1>Greetings to TCE Canteen Page</h1>
+            <div class="button-group">
+                <button onclick="showLogin()">Login</button>
+                <button onclick="showSignup()">Signup</button>
+                <button onclick="showUserDetails()">User Details</button>
+                <button onclick="showPaymentHistory()">Payment History</button>
+            </div>
+        </div>
+
+        <div id="login-form" class="form-group hidden">
+            <h2>Login Page</h2>
+            <label for="login-name">Name</label>
+            <input type="text" id="login-name" placeholder="Enter your name">
+            <label for="login-password">Password</label>
+            <input type="password" id="login-password" placeholder="Enter your password">
+            <button onclick="login()">Login</button>
+            <button onclick="hideAll()">Cancel</button>
+        </div>
+
+        <div id="signup-form" class="form-group hidden">
+            <h2>Signup Page</h2>
+            <label for="signup-name">User Name</label>
+            <input type="text" id="signup-name" placeholder="Enter your username">
+            <label for="signup-password">Password</label>
+            <input type="password" id="signup-password" placeholder="Enter your password">
+            <label for="signup-password-check">Enter password again</label>
+            <input type="password" id="signup-password-check" placeholder="Re-enter your password">
+            <label for="signup-mobileno">Mobile Number</label>
+            <input type="text" id="signup-mobileno" placeholder="Enter your mobile number">
+            <button onclick="signup()">Signup</button>
+            <button onclick="hideAll()">Cancel</button>
+        </div>
+
+        <div id="order-form" class="form-group hidden">
+            <h2>Items for Sale</h2>
+            <div id="item-buttons">
+                <button onclick="orderItem(1)">Samosa</button>
+                <button onclick="orderItem(2)">Biscuit</button>
+                <button onclick="orderItem(3)">Juice</button>
+                <button onclick="orderItem(4)">Cake</button>
+                <button onclick="orderItem(5)">Tea</button>
+                <button onclick="orderItem(6)">Coffee</button>
+            </div>
+            <button onclick="completeOrder()">Complete Order</button>
+            <div id="order-summary"></div>
+            <button onclick="cancelOrder()">Cancel Order</button>
+        </div>
+
+        <div id="user-details" class="form-group hidden">
+            <h2>User Details</h2>
+            <div id="user-list"></div>
+            <button onclick="hideAll()">Close</button>
+        </div>
+
+        <div id="payment-history" class="form-group hidden">
+            <h2>Payment History</h2>
+            <div id="history-list"></div>
+            <button onclick="hideAll()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        class Stack {
+            constructor(size = 1000) {
+                this.stack = [];
+                this.maxSize = size;
+                this.top = -1;
+            }
+
+            isEmpty() {
+                return this.top === -1;
+            }
+
+            isFull() {
+                return this.top === this.maxSize - 1;
+            }
+
+            push(value) {
+                if (!this.isFull()) {
+                    this.top += 1;
+                    this.stack.push(value);
+                } else {
+                    alert("Stack is Full");
+                }
+            }
+
+            pop() {
+                if (!this.isEmpty()) {
+                    this.top -= 1;
+                    return this.stack.pop();
+                } else {
+                    alert("Stack is Empty");
+                    return null;
+                }
+            }
+
+            popAll() {
+                let poppedItems = [];
+                while (!this.isEmpty()) {
+                    const value = this.pop();
+                    if (value !== null) {
+                        poppedItems.push(value);
+                    }
+                }
+                return poppedItems;
+            }
+        }
+
+        class Node {
+            constructor(mobileno, name, password) {
+                this.mobileno = mobileno;
+                this.name = name;
+                this.password = password;
+                this.next = null;
+            }
+        }
+
+        class LinkedList {
+            constructor() {
+                this.head = null;
+            }
+
+            isEmpty() {
+                return this.head === null;
+            }
+
+            append(mobileno, name, password) {
+                const newNode = new Node(mobileno, name, password);
+                if (this.isEmpty()) {
+                    this.head = newNode;
+                } else {
+                    let current = this.head;
+                    while (current.next) {
+                        current = current.next;
+                    }
+                    current.next = newNode;
+                }
+            }
+
+            display() {
+                let current = this.head;
+                const userDetails = document.getElementById("user-list");
+                userDetails.innerHTML = "";
+                while (current) {
+                    userDetails.innerHTML += `<p>Name: ${current.name}, Mobile No: ${current.mobileno}</p>`;
+                    current = current.next;
+                }
+            }
+
+            checkAllNamePass(name, password) {
+                let current = this.head;
+                while (current) {
+                    if (current.name === name && current.password === password) {
+                        return true;
+                    }
+                    current = current.next;
+                }
+                return false;
+            }
+        }
+
+        class Queue {
+            constructor(size = 1000) {
+                this.queue = new Array(size).fill(null);
+                this.maxSize = size;
+                this.front = 0;
+                this.rear = 0;
+                this.size = 0;
+            }
+
+            isEmpty() {
+                return this.size === 0;
+            }
+
+            isFull() {
+                return this.size === this.maxSize;
+            }
+
+            enqueue(item) {
+                if (!this.isFull()) {
+                    this.queue[this.rear] = item;
+                    this.rear = (this.rear + 1) % this.maxSize;
+                    this.size += 1;
+                } else {
+                    alert("Queue is Full");
+                }
+            }
+
+            dequeue() {
+                if (!this.isEmpty()) {
+                    const item = this.queue[this.front];
+                    this.queue[this.front] = null;
+                    this.front = (this.front + 1) % this.maxSize;
+                    this.size -= 1;
+                    return item;
+                } else {
+                    alert("Queue is Empty");
+                    return null;
+                }
+            }
+
+            display() {
+                let i = this.front;
+                let items = "";
+                while (i !== this.rear) {
+                    items += `${this.queue[i]}<br>`;
+                    i = (i + 1) % this.maxSize;
+                }
+                document.getElementById("order-summary").innerHTML = items;
+            }
+
+            clear() {
+                this.queue = new Array(this.maxSize).fill(null);
+                this.front = 0;
+                this.rear = 0;
+                this.size = 0;
+            }
+        }
+
+        const user = new LinkedList();
+        const order = new Queue();
+        const history = new Stack();
+
+        function hideAll() {
+            document.querySelectorAll(".form-group").forEach(el => el.classList.add("hidden"));
+            document.getElementById("main-menu").classList.remove("hidden");
+        }
+
+        function showLogin() {
+            hideAll();
+            document.getElementById("login-form").classList.remove("hidden");
+        }
+
+        function showSignup() {
+            hideAll();
+            document.getElementById("signup-form").classList.remove("hidden");
+        }
+
+        function showUserDetails() {
+            hideAll();
+            user.display();
+            document.getElementById("user-details").classList.remove("hidden");
+        }
+
+        function showPaymentHistory() {
+            hideAll();
+            displayPaymentHistory();
+            document.getElementById("payment-history").classList.remove("hidden");
+        }
+
+        function displayPaymentHistory() {
+            const historyList = document.getElementById("history-list");
+            const allPayments = history.popAll();
+            historyList.innerHTML = "";
+            allPayments.forEach(payment => {
+                historyList.innerHTML += `<p>${payment}</p>`;
+            });
+        }
+
+        function login() {
+            const name = document.getElementById("login-name").value;
+            const password = document.getElementById("login-password").value;
+            if (user.checkAllNamePass(name, password)) {
+                alert("Login successful! Redirecting to Order Page.");
+                orderItems();
+            } else {
+                alert("The user and password details don't match");
+            }
+        }
+
+        function signup() {
+            const name = document.getElementById("signup-name").value;
+            const password = document.getElementById("signup-password").value;
+            const passCheck = document.getElementById("signup-password-check").value;
+            const mobileno = document.getElementById("signup-mobileno").value;
+
+            if (password === passCheck) {
+                user.append(mobileno, name, password);
+                alert("Signup successful! Redirecting to Order Page.");
+                orderItems();
+            } else {
+                alert("Passwords don't match");
+            }
+        }
+
+        const items = {"Samosa": 10, "Biscuit": 10, "Juice": 20, "Cake": 10, "Tea": 10, "Coffee": 10};
+        let orderSummary = {};
+
+        function orderItems() {
+            hideAll();
+            document.getElementById("order-form").classList.remove("hidden");
+        }
+
+        function orderItem(itemId) {
+            const itemNames = ["Samosa", "Biscuit", "Juice", "Cake", "Tea", "Coffee"];
+            const item = itemNames[itemId - 1];
+            const count = parseInt(prompt(`Enter quantity for ${item}`));
+            if (!isNaN(count)) {
+                order.enqueue(`${item}-${count}`);
+                if (orderSummary[item]) {
+                    orderSummary[item] += count;
+                } else {
+                    orderSummary[item] = count;
+                }
+            }
+        }
+
+        function completeOrder() {
+            let total = 0;
+            for (let item in orderSummary) {
+                total += orderSummary[item] * items[item];
+            }
+            alert(`Order Summary:\n${JSON.stringify(orderSummary, null, 2)}\nTotal: ${total}`);
+            onlinePayment(total);
+        }
+
+        function onlinePayment(total) {
+            const confirmed = confirm(`Total Amount to be paid: ${total}\nProceed to pay?`);
+            if (confirmed) {
+                const passc = prompt("Enter UPI PIN");
+                if (passc.length === 4 || passc.length === 6) {
+                    alert("Payment completed");
+                    const time = new Date().toISOString();
+                    const rand = Math.random();
+                    history.push(`Reference ID: ${rand}, Time: ${time}, Amount: ${total}`);
+                    processOrder();
+                } else {
+                    alert("Payment failed... Redirecting...");
+                }
+            }
+        }
+
+        function processOrder() {
+            alert("Order is being processed...");
+            order.display();
+            alert("Items are given");
+        }
+
+        function cancelOrder() {
+            if (confirm("Are you sure you want to cancel the order?")) {
+                order.clear();
+                orderSummary = {};
+                alert("Order has been cancelled");
+                hideAll();
+            }
+        }
+    </script>
+</body>
+</html>
